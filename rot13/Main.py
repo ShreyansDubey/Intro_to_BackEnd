@@ -2,9 +2,10 @@ import webapp2
 import jinja2
 import os
 
+from rot13 import *
+
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape = True)
-
 
 class Handler(webapp2.RequestHandler) :
 	def write(self, *a, **kw) :
@@ -18,8 +19,18 @@ class Handler(webapp2.RequestHandler) :
 		self.write(self.render_str(template, **kw))
 
 class MainPage(Handler) :
+	
 	def get(self) :
-		items = self.request.get_all('food')
-		self.render('temp.html', items = items)
+		text = ''
+		self.render('rot.html', text = text)
 
-app = webapp2.WSGIApplication([('/', MainPage)], debug=True)
+	def post(self) :
+		text = ''
+		text = self.request.get('text')
+		text = rot13(text)
+		self.render('rot.html', text = text)
+
+app = webapp2.WSGIApplication([('/', MainPage)], debug = True)
+
+		
+
